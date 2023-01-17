@@ -1,0 +1,74 @@
+package framework.managers;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.apache.commons.exec.OS;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.safari.SafariDriver;
+
+import java.time.Duration;
+
+public class DriverManager {
+
+    private static DriverManager INSTANCE = null;
+
+    private WebDriver driver;
+
+    private DriverManager() {
+
+    }
+
+    public static DriverManager getInstance() {
+        if(INSTANCE == null) {
+            INSTANCE = new DriverManager();
+        }
+        return INSTANCE;
+    }
+
+    public WebDriver getDriver(){
+        if(driver == null) {
+            initDriver();
+        }
+        return driver;
+    }
+
+    private void initDriver() {
+
+//        System.out.println("Выберите браузер: \n " +
+//                "(1) GoogleChrome \n" +
+//                "(2) Safari \n" +
+//                "(3) Firefox");
+
+
+        int temp = Integer.parseInt(System.getProperty("browser", "1"));
+
+        switch (temp) {
+            case 2:
+                System.out.println("Launching Safari");
+                driver = new SafariDriver();
+                break;
+            case 3:
+                System.out.println("Launching Firefox");
+                driver = new FirefoxDriver();
+                break;
+            default:
+                System.out.println("Launching Chrome");
+                WebDriverManager.chromedriver().setup();
+                driver = new ChromeDriver();
+                break;
+        }
+
+        driver.manage().window().maximize(); //развернуть браузер
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+    }
+
+    public void quitDriver() {
+        if(driver != null) {
+            driver.quit();
+            driver = null;
+        }
+    }
+
+
+}
