@@ -26,13 +26,21 @@ public class FindBlock extends BasePage {
         return pageManager.getFindBlock();
     }
 
-    public void searchItem(String text){
+    public SearchPage searchItem(String text){
         searchLine.sendKeys(text);
         searchButton.click();
+        return pageManager.getSearchPage();
     }
 
-    public void clickOnBasket() {
+
+    public BasketPage clickOnBasket() {
         basket.click();
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return pageManager.getBasketPage();
     }
 
     public int getBasketSummary(){

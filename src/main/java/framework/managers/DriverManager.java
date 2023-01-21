@@ -35,12 +35,6 @@ public class DriverManager {
 
     private void initDriver() {
 
-//        System.out.println("Выберите браузер: \n " +
-//                "(1) GoogleChrome \n" +
-//                "(2) Safari \n" +
-//                "(3) Firefox");
-
-
         int temp = Integer.parseInt(System.getProperty("browser", "1"));
 
         switch (temp) {
@@ -59,8 +53,6 @@ public class DriverManager {
                 break;
         }
 
-        driver.manage().window().maximize(); //развернуть браузер
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
     }
 
     public void quitDriver() {

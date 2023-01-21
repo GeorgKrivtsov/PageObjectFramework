@@ -7,13 +7,11 @@ import framework.pages.SearchPage;
 
 public class PageManager {
 
-    private static PageManager INSTANCE = null;
-
     private FindBlock findBlock;
     private SearchPage searchPage;
     private ProductPage productPage;
     private BasketPage basketPage;
-
+    private static PageManager INSTANCE = null;
 
     private PageManager() {
     }

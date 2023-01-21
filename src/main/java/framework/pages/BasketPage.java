@@ -27,14 +27,17 @@ public class BasketPage extends  BasePage{
 //    @FindBy(xpath = "//div[@class='cart-items__product-code']/div")
 //    private WebElement productCode;
 
-    public void removeProduct(String name){
+    public BasketPage removeProduct(String name){
         for (WebElement itemProduct : productsForBuy) {
             if(itemProduct.getText().contains(name)) {
                 WebElement removeButton = itemProduct.findElement(By.xpath("./div/div/div/div/div/div/div/div/div/button[contains(@class, 'remove-button')]"));
                 removeButton.click();
-                break;
+                return pageManager.getBasketPage();
             }
         }
+
+        Assertions.fail("Элемент не обнаружен");
+        return pageManager.getBasketPage();
     }
 
 
@@ -48,7 +51,7 @@ public class BasketPage extends  BasePage{
         }
     }
 
-    public void addProduct(String code, int count) {
+    public BasketPage addProduct(String code, int count) {
         for (WebElement itemProduct : productsForBuy) {
             if(itemProduct.getText().contains(code)) {
                 WebElement addButton = itemProduct.findElement(By.xpath("./div/div/div/div/div/button[@class='count-buttons__button count-buttons__button_plus']"));
@@ -60,27 +63,33 @@ public class BasketPage extends  BasePage{
                         throw new RuntimeException(e);
                     }
                 }
-                break;
+                return pageManager.getBasketPage();
             }
         }
+        Assertions.fail("Элемент не обнаружен");
+        return pageManager.getBasketPage();
     }
 
-    public void returnRemoveProduct(){
+    public BasketPage returnRemoveProduct(){
         returnRemoveProduct.click();
+        return pageManager.getBasketPage();
     }
 
 
-    public void checkPhoneAdditional(String code){
+    public BasketPage checkPhoneAdditional(String code){
         for (WebElement itemProduct : productsForBuy) {
             if (itemProduct.getText().contains(code)) {
                 WebElement additionalyCheckBox = itemProduct.findElement(By.xpath("./div/div/div/div/div/div/div/div/div[contains(@class, 'base-ui-radio-button') and contains(text(), '12')]"));
                 Assertions.assertTrue(additionalyCheckBox.getAttribute("class").contains("checked"), "Гарантия не выбрана");
-                break;
+                return pageManager.getBasketPage();
             }
         }
+        Assertions.fail("Эдемент не найден");
+        return pageManager.getBasketPage();
     }
 
-    public void checkSummaryPrice(){
+    public BasketPage checkSummaryPrice(){
+        waitUtilElementToBeVisible(summaryPrice);
         int temp1 = 0;
         int temp2 = Integer.parseInt(summaryPrice.getText().replaceAll("[^0-9]", ""));
 
@@ -95,19 +104,21 @@ public class BasketPage extends  BasePage{
                 temp1 += (Integer.parseInt(additionalyCheckBox.findElement(By.xpath("./../span")).getText().replaceAll("[^0-9]", ""))
                         * Integer.parseInt(count.getAttribute("value").replaceAll("[^0-9]", "")));
             }
+
+
         }
-
         Assertions.assertTrue(temp1 == temp2, "суммы продуктов и карзины не равны");
-
+        return pageManager.getBasketPage();
     }
 
-    public void checkRemoveProduct(String name) {
+    public BasketPage checkRemoveProduct(String name) {
         for(WebElement item : productsForBuy) {
             if(item.getText().equalsIgnoreCase(name)) {
                 Assertions.fail("Товар не удалился");
+                return pageManager.getBasketPage();
             }
         }
-
+        return pageManager.getBasketPage();
     }
 
     public int getSummaryPrice(){

@@ -18,83 +18,60 @@ public class DnsTest extends BaseTests {
     @Test
     public void testScenario(){
 
+        pageManager.getFindBlock()
+                .checkOpenPage()
+                .searchItem("iphone")
+                .searchElementByVendorCode("5072935")
+                .checkOpenPage();
 
-
-        //Проверка загрузки страницы
-        findBlock.checkOpenPage();
-        //Вбиваем в поиске айфоне
-        findBlock.searchItem("iphone");
-        //Находим в списке нужный
-        searchPage.searchElementByVendorCode("5072935");
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         //Запоминаем стоимость
-        int priceFirstProduct = productPage.getPriceOfProduct();
-        //Выбираем вкладку гарантии
-        productPage.clickOnAdditionalSale();
-        //Выбираем гарантию
-        productPage.clickOnAdditionalCheckBox();
+        int priceFirstProduct = pageManager.getProductPage().getPriceOfProduct();
+
+        pageManager.getProductPage()
+                .clickOnAdditionalSale()
+                .clickOnAdditionalCheckBox();
+
         //Запоминаем стоимость гарантии
-        int countAdditional = productPage.getCountAdditional();
-        //Нажимаем купить
-        productPage.clickOnButtonBuy();
-        //Ищем наушники
-        findBlock.searchItem("Apple AirPods Pro 2");
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        int countAdditional = pageManager.getProductPage().getCountAdditional();
+
+        pageManager.getProductPage()
+                .clickOnButtonBuy()
+                .getFindBlock()
+                .searchItem("Apple AirPods Pro 2")
+                .goToProductPage()
+                .checkOpenPage();
+
         //Запомниаем цену наушников
-        int priceSecondProsuct = productPage.getPriceOfProduct();
-        //Добавляем в карзину
-        productPage.clickOnButtonBuy();
+        int priceSecondProsuct = pageManager.getProductPage().getPriceOfProduct();
+
+        pageManager.getProductPage()
+                .clickOnButtonBuy();
+
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         //Проверяем сумму в карзине
-        Assertions.assertEquals(findBlock.getBasketSummary(), priceFirstProduct+countAdditional+priceSecondProsuct, "неверная сумма покупки");
-        //Переходим в карзину
-        findBlock.clickOnBasket();
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        //Проверка нужной гарантии
-        basketPage.checkPhoneAdditional("5072935");
-        //Проверка общей суммы товаров
-        basketPage.checkSummaryPrice();
-        //удаляем по имени
-        basketPage.removeProduct("Apple AirPods Pro 2");
-        //Проверяем удалился ли товар
-        basketPage.checkRemoveProduct("Apple AirPods Pro 2");
-        //Проверяем изменилась ли цена
-        basketPage.checkSummaryPrice();
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        //Проверить работает ли
-        basketPage.addProduct("5072935", 2);
-        //проверяем изменение цены
-        basketPage.checkSummaryPrice();
-        //Возвращаем удаленный товар
-        basketPage.returnRemoveProduct();
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        Assertions.assertEquals(pageManager.getFindBlock().getBasketSummary(),
+                priceFirstProduct+countAdditional+priceSecondProsuct, "неверная сумма покупки");
 
-        //проверяем изменение цены
-        basketPage.checkSummaryPrice();
+        pageManager.getFindBlock()
+                .clickOnBasket()
+                .checkPhoneAdditional("5072935")
+                .checkSummaryPrice()
+                .removeProduct("Apple AirPods Pro 2")
+                .checkRemoveProduct("Apple AirPods Pro 2")
+                .checkSummaryPrice()
+                .addProduct("5072935", 2) //возможно нужна пауза
+                .checkSummaryPrice()
+                .returnRemoveProduct()
+                .checkSummaryPrice();
+
+
+
+
+//
 
 
 

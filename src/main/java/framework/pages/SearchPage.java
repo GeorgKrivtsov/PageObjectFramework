@@ -1,6 +1,7 @@
 package framework.pages;
 
 import framework.managers.DriverManager;
+import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -19,7 +20,7 @@ public class SearchPage extends BasePage {
     @FindBy(xpath = "//div[@data-code='5072935']/a[contains(@class, 'ui-link')]")
     private WebElement productLink;
 
-    public void searchElementByVendorCode(String code){
+    public ProductPage searchElementByVendorCode(String code){
         for (WebElement itemProduct : searchList) {
             WebElement imageProduct = itemProduct.findElement(By.xpath("./div[@class='catalog-product__image']"));
             new Actions(DriverManager.getInstance().getDriver())
@@ -33,11 +34,16 @@ public class SearchPage extends BasePage {
 
             if(productVendorCode.getText().contains(code)) {
                 productLink.click();
-                break;
+                return pageManager.getProductPage();
             }
 
         }
+        Assertions.fail("Продукт не найден");
+        return pageManager.getProductPage();
+    }
 
+    public ProductPage goToProductPage() {
+        return pageManager.getProductPage();
     }
 
 }
