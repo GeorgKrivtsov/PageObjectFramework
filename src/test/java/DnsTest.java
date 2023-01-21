@@ -1,45 +1,100 @@
 import framework.managers.DriverManager;
+import framework.pages.BasketPage;
 import framework.pages.FindBlock;
+import framework.pages.ProductPage;
+import framework.pages.SearchPage;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import tests.BaseTests;
 
 import java.util.List;
 
 public class DnsTest extends BaseTests {
 
-    FindBlock findBlock = new FindBlock();
-
     @Test
     public void testScenario(){
 
-        WebElement search = DriverManager.getInstance().getDriver().findElement(By.xpath("//input[@class='presearch__input']"));
-        search.sendKeys("iphone");
-        search.sendKeys(Keys.ENTER);
-
-        //WebElement catalog1 = DriverManager.getInstance().getDriver().findElement(By.xpath("//div[contains(@class, 'catalog-products')]"));
-        //List<WebElement> listCatalog = (List<WebElement>) DriverManager.getInstance().getDriver().findElement(By.xpath("//div[contains(@class, 'catalog-products')]"));
-
-//        WebElement productCard = DriverManager.getInstance().getDriver().findElement(By.xpath("//div[@data-code='5072935']"));
-
-        WebElement productLink = DriverManager.getInstance().getDriver().findElement(By.xpath("//div[@data-code='5072935']/a[contains(@class, 'ui-link')]"));
-        productLink.click();
 
 
-        WebElement priceProduct1 = DriverManager.getInstance().getDriver().findElement(By.xpath("//div[@class='product-buy__price']"));
-        String priceProduct = priceProduct1.getText();
+        //Проверка загрузки страницы
+        findBlock.checkOpenPage();
+        //Вбиваем в поиске айфоне
+        findBlock.searchItem("iphone");
+        //Находим в списке нужный
+        searchPage.searchElementByVendorCode("5072935");
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        //Запоминаем стоимость
+        int priceFirstProduct = productPage.getPriceOfProduct();
+        //Выбираем вкладку гарантии
+        productPage.clickOnAdditionalSale();
+        //Выбираем гарантию
+        productPage.clickOnAdditionalCheckBox();
+        //Запоминаем стоимость гарантии
+        int countAdditional = productPage.getCountAdditional();
+        //Нажимаем купить
+        productPage.clickOnButtonBuy();
+        //Ищем наушники
+        findBlock.searchItem("Apple AirPods Pro 2");
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        //Запомниаем цену наушников
+        int priceSecondProsuct = productPage.getPriceOfProduct();
+        //Добавляем в карзину
+        productPage.clickOnButtonBuy();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        //Проверяем сумму в карзине
+        Assertions.assertEquals(findBlock.getBasketSummary(), priceFirstProduct+countAdditional+priceSecondProsuct, "неверная сумма покупки");
+        //Переходим в карзину
+        findBlock.clickOnBasket();
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        //Проверка нужной гарантии
+        basketPage.checkPhoneAdditional("5072935");
+        //Проверка общей суммы товаров
+        basketPage.checkSummaryPrice();
+        //удаляем по имени
+        basketPage.removeProduct("Apple AirPods Pro 2");
+        //Проверяем удалился ли товар
+        basketPage.checkRemoveProduct("Apple AirPods Pro 2");
+        //Проверяем изменилась ли цена
+        basketPage.checkSummaryPrice();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        //Проверить работает ли
+        basketPage.addProduct("5072935", 2);
+        //проверяем изменение цены
+        basketPage.checkSummaryPrice();
+        //Возвращаем удаленный товар
+        basketPage.returnRemoveProduct();
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
-        WebElement additionalSale = DriverManager.getInstance().getDriver().findElement(By.xpath("//div[@class='additional-sales-tabs__title' and contains(text(), '12 мес')]"));
-        additionalSale.click();
-
-        WebElement checkBox = DriverManager.getInstance().getDriver().findElement(By.xpath("//input[@class='ui-radio__input' and @value='0']/../span[@class='ui-radio__content']"));
-        checkBox.click();
-
-        WebElement buttonBuy = DriverManager.getInstance().getDriver().findElement(By.xpath("//button[@class='button-ui buy-btn button-ui_brand button-ui_passive']"));
-        buttonBuy.click();
-
+        //проверяем изменение цены
+        basketPage.checkSummaryPrice();
 
 
 
