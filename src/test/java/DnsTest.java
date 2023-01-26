@@ -16,6 +16,19 @@ import java.util.List;
 public class DnsTest extends BaseTests {
 
     @Test
+    public void testProductClas(){
+        pageManager.getFindBlock()
+                .checkOpenPage()
+                .searchItem("iphone")
+                .searchElementByVendorCode("5072935")
+                .checkOpenPage()
+                .clickOnAdditionalSale()
+                .clickOnAdditionalCheckBox()
+                .createAndAddProductForProductList();
+
+    }
+
+    @Test
     public void testScenario(){
 
         pageManager.getFindBlock()
@@ -26,6 +39,7 @@ public class DnsTest extends BaseTests {
 
         //Запоминаем стоимость
         int priceFirstProduct = pageManager.getProductPage().getPriceOfProduct();
+
 
         pageManager.getProductPage()
                 .clickOnAdditionalSale()
@@ -42,7 +56,7 @@ public class DnsTest extends BaseTests {
                 .checkOpenPage();
 
         //Запомниаем цену наушников
-        int priceSecondProsuct = pageManager.getProductPage().getPriceOfProduct();
+        int priceSecondProduct = pageManager.getProductPage().getPriceOfProduct();
 
         pageManager.getProductPage()
                 .clickOnButtonBuy();
@@ -54,10 +68,11 @@ public class DnsTest extends BaseTests {
         }
         //Проверяем сумму в карзине
         Assertions.assertEquals(pageManager.getFindBlock().getBasketSummary(),
-                priceFirstProduct+countAdditional+priceSecondProsuct, "неверная сумма покупки");
+                priceFirstProduct+countAdditional+priceSecondProduct, "неверная сумма покупки");
 
         pageManager.getFindBlock()
                 .clickOnBasket()
+                .checkOpenPage()
                 .checkPhoneAdditional("5072935")
                 .checkSummaryPrice()
                 .removeProduct("Apple AirPods Pro 2")
@@ -67,14 +82,6 @@ public class DnsTest extends BaseTests {
                 .checkSummaryPrice()
                 .returnRemoveProduct()
                 .checkSummaryPrice();
-
-
-
-
-//
-
-
-
     }
 
 }

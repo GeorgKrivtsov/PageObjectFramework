@@ -24,8 +24,16 @@ public class BasketPage extends  BasePage{
     @FindBy(xpath = "//span[contains(@class, 'cart-tab-menu__item')]/span")
     private WebElement returnRemoveProduct;
 
+    @FindBy(xpath = "//h1")
+    private WebElement header;
+
 //    @FindBy(xpath = "//div[@class='cart-items__product-code']/div")
 //    private WebElement productCode;
+
+    public BasketPage checkOpenPage(){
+        Assertions.assertTrue(header.isDisplayed(), "Страница не загрузилась");
+        return pageManager.getBasketPage();
+    }
 
     public BasketPage removeProduct(String name){
         for (WebElement itemProduct : productsForBuy) {

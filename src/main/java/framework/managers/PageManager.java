@@ -1,9 +1,13 @@
 package framework.managers;
 
-import framework.pages.BasketPage;
-import framework.pages.FindBlock;
-import framework.pages.ProductPage;
-import framework.pages.SearchPage;
+import framework.pages.*;
+import framework.product.ProductList;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 public class PageManager {
 
@@ -11,10 +15,14 @@ public class PageManager {
     private SearchPage searchPage;
     private ProductPage productPage;
     private BasketPage basketPage;
+    private ProductList productList;
     private static PageManager INSTANCE = null;
+
+    private static Map<Class, Object> pageSet = new HashMap<>();
 
     private PageManager() {
     }
+
 
     public static PageManager getInstance() {
         if(INSTANCE == null) {
@@ -22,6 +30,36 @@ public class PageManager {
         }
         return INSTANCE;
     }
+
+    public ProductList getProductList(){
+        if(productList == null){
+            productList = new ProductList();
+        }
+        return productList;
+    }
+
+//    public <T extends BasePage> T getPage(Class<T> page) {
+//        try {
+//            if(pageSet.isEmpty()){
+//                Class.forName(String.valueOf(page));
+//                Constructor c1 = Class.class.getConstructor();
+//                pageSet.put(c1.getClass(), page);
+//                return (T) c1.newInstance();
+//            } else if(pageSet.containsKey(page)){
+//                return (T) pageSet.get(page);
+//            } else {
+//                Class.forName(String.valueOf(page));
+//                Constructor c1 = Class.class.getConstructor();
+//                pageSet.put(c1.getClass(), page);
+//                return (T) c1.newInstance();
+//            }
+//        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException | InvocationTargetException |
+//                 NoSuchMethodException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+
 
     public FindBlock getFindBlock() {
         if(findBlock == null) {

@@ -20,6 +20,11 @@ public class BasePage {
         PageFactory.initElements(driverManager.getDriver(), this);
     }
 
+    public FindBlock getFindBlock(){
+        return pageManager.getFindBlock();
+    }
+
+
 
     protected WebElement waitUtilElementToBeClickable(WebElement element) {
         return wait.until(ExpectedConditions.elementToBeClickable(element));
